@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import {Task} from '../task/task.component';
+import {ProjectService,project,Task} from '../services/project.service';
+import { format } from 'url';
 
 @Component({
   selector: 'app-task-list',
@@ -8,14 +9,41 @@ import {Task} from '../task/task.component';
 })
 export class TaskListComponent implements OnInit {
 
-  tasks : Array<Task> = new Array<Task>();
-
-  constructor() { }
+  constructor(private projectService: ProjectService) { }
 
   ngOnInit() {
-    for(let i=0; i<10; i++){
-      this.tasks.push(new Task('تسک شماره '+ i));
+    
+  }
+
+  getTasks()
+  {
+    let validTasks = new Array<Task>();
+
+    for(let project of this.projectService.getProjects())
+    {
+      for(let task of project.tasks)
+      {
+        if(!task.isDone){
+          validTasks.push(task);
+        }
+      }
     }
+
+    return validTasks;
+  }
+
+  getProjectsTitle(){
+    /*
+    let titles = new Array<String>();
+    for(let project of this.projectService.getProjects())
+    {
+      titles.push(project.title);
+    }
+
+    return titles;*/
+
+    return this.projectService.getProjects();
   }
 
 }
+
